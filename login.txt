@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+
+namespace WindowsFormsApp2
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();a
+        }
+
+        string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=baza;";
+
+        public void login()
+        {
+            string query = "SELECT login, password FROM data WHERE login = '" + textBox1.Text + "' AND password = '" + textBox2.Text + "'";
+
+            MySqlConnection databaseConnection = new MySqlConnection(connectionString);
+            MySqlCommand comandDatabase = new MySqlCommand(query, databaseConnection);
+            comandDatabase.CommandTimeout = 60;
+            MySqlDataReader reader;
+
+            try
+            {
+                databaseConnection.Open();
+                reader = comandDatabase.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        IDataRecord record = ((IDataRecord)reader);
+
+                        MessageBox.Show("Zalogowano");
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Nie poprawny login lub hasło");
+                }
+                databaseConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            } 
+        }
+
+        public void reistration()
+        {
+            Form2 register = new Form2();
+            register.Show();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void button1_MouseClick(object sender, MouseEventArgs e)
+        {
+            login();
+        }
+
+        private void button2_MouseClick(object sender, MouseEventArgs e)
+        {
+            reistration();
+        }
+    }
+}
